@@ -257,6 +257,7 @@ require('lazy').setup({
       },
     },
   },
+
   -- NOTE: Adds Github Copilot support
   {
     'zbirenbaum/copilot.lua',
@@ -273,6 +274,38 @@ require('lazy').setup({
     'zbirenbaum/copilot-cmp',
     config = function()
       require('copilot_cmp').setup()
+    end,
+  },
+
+  -- NOTE: Testing
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'jfpedroza/neotest-elixir',
+    },
+    config = function()
+      ---@diagnostic disable-next-line: missing-fields
+      require('neotest').setup {
+        adapters = {
+          require 'neotest-elixir',
+        },
+      }
+
+      vim.keymap.set('n', '<leader>tn', function()
+        require('neotest').run.run()
+      end, { desc = 'Run nearest test' })
+
+      vim.keymap.set('n', '<leader>tf', function()
+        require('neotest').run.run(vim.fn.expand '%')
+      end, { desc = 'Run current file' })
+
+      vim.keymap.set('n', '<leader>ts', function()
+        require('neotest').run.run { suite = true }
+      end, { desc = 'Run test suite' })
     end,
   },
 
@@ -390,6 +423,7 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
+      vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = '[S]earch [B]uffers' })
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
